@@ -6,13 +6,13 @@ const port = 8000;
 // IMPORTS
 // ==========================================
 // Importing from gateways/eastcoast_gate.js
-// const { runGate } = require('./gateways/eastcoast_gate');
+const { runGate } = require('./gateways/eastcoast_gate');
 
 // Importing from gateways/killer1.js (Google Task - Commented out)
 // const { runGoogleTask } = require('./gateways/killer1');
 
 // Importing from gateways/killer2.js
-const { runFujikuraTask } = require('./gateways/killer2');
+// const { runFujikuraTask } = require('./gateways/killer2');
 
 // Importing from gateways/killer3.js
 // const { runBuy4StoreTask } = require('./gateways/killer3');
