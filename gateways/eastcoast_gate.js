@@ -1,8 +1,32 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { wrapper } = require('axios-cookiejar-support');
 const { CookieJar } = require('tough-cookie');
 const UserAgent = require('user-agents');
+
+// FIX: Instead of require, we use a dynamic import for this specific module
+let wrapper;
+import('axios-cookiejar-support').then(module => {
+    wrapper = module.wrapper;
+});
+
+// Update your createClient function to handle the async wrapper
+function createClient() {
+    const jar = new CookieJar();
+    const client = axios.create({
+        jar,
+        withCredentials: true,
+        headers: {
+            'User-Agent': new UserAgent({ deviceCategory: 'mobile' }).toString(),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    });
+
+    // We check if wrapper is loaded, then apply it
+    return wrapper ? wrapper(client) : client;
+}
 
 // Helper: Generate Random Email
 function generateRandomEmail() {
@@ -15,20 +39,20 @@ function generateRandomEmail() {
 }
 
 // Factory: Create a fresh client with its own Cookie Jar
-function createClient() {
-    const jar = new CookieJar();
-    return wrapper(axios.create({
-        jar,
-        withCredentials: true,
-        headers: {
-            'User-Agent': new UserAgent({ deviceCategory: 'mobile' }).toString(),
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-        }
-    }));
-}
+// function createClient() {
+//     const jar = new CookieJar();
+//     return wrapper(axios.create({
+//         jar,
+//         withCredentials: true,
+//         headers: {
+//             'User-Agent': new UserAgent({ deviceCategory: 'mobile' }).toString(),
+//             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+//             'Accept-Language': 'en-US,en;q=0.5',
+//             'Cache-Control': 'no-cache',
+//             'Pragma': 'no-cache'
+//         }
+//     }));
+// }
 
 // --- WORKER FUNCTIONS (Adapted for independent clients) ---
 
